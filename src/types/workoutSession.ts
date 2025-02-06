@@ -1,18 +1,15 @@
-// src/types/workoutSession.ts
-
-export type Set = {
-    weight: number; // Weight in kilograms
+export type WorkoutSet = {
+    weight: number; // Weight lifted in kg
     reps: number;   // Number of repetitions
 };
 
-export type Exercise = {
-    name: string;   // Exercise name, e.g., "Squat"
-    sets: Set[];    // Array of sets for this exercise
+export type WorkoutExercise = {
+    name: string;        // Exercise name (e.g., "Bench Press")
+    sets: WorkoutSet[];  // List of sets for this exercise
 };
 
 export type WorkoutSession = {
-    id: string;                // Unique ID for the session
-    date: string;              // Date of the session
-    durationMinutes: number;   // Duration of the session in minutes
-    exercises: Exercise[];     // Array of exercises performed
+    id: string;            // Unique ID for the session
+    date: string;          // Date of workout in ISO format
+    exercises: WorkoutExercise[]; // List of exercises in the session
 };
