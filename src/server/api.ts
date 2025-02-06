@@ -1,35 +1,50 @@
-// src/server/api.ts
 import express from "express";
-import { getWorkoutSessions, addWorkoutSession, getWorkoutSessionById } from "../models/workoutSessionModel";
-import { WorkoutSession } from "../types/workoutSession";
+import { WorkoutSession } from "../models/workoutSessionModel";
 
-const app = express();
-const port = 3000;
+const router = express.Router();
 
-app.use(express.json()); // Middleware to parse JSON bodies
+// In-memory database (for now)
+let workouts: WorkoutSession[] = [];
 
-// Route to get all workout sessions
-app.get("/api/workout-sessions", (req, res) => {
-    res.json(getWorkoutSessions());
+// Get all workouts
+router.get("/workouts", (req, res) => {
+    res.json(workouts);
 });
 
-// Route to add a new workout session
-app.post("/api/workout-sessions", (req, res) => {
-    const newSession: WorkoutSession = req.body;
-    addWorkoutSession(newSession);
-    res.status(201).json(newSession);
-});
-
-// Route to get a workout session by ID
-app.get("/api/workout-sessions/:id", (req, res) => {
-    const session = getWorkoutSessionById(req.params.id);
-    if (session) {
-        res.json(session);
-    } else {
-        res.status(404).send("Workout session not found");
+// Get a specific workout by ID
+router.get("/workouts/:id", (req, res) => {
+    const workout = workouts.find(w => w.id === req.params.id);
+    if (!workout) {
+        return res.status(404).json({ message: "Workout not found" });
     }
+    res.json(workout);
 });
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+// Create a new workout
+router.post("/workouts", (req, res) => {
+    const newWorkout: WorkoutSession = { id: Date.now().toString(), ...req.body };
+    workouts.push(newWorkout);
+    res.status(201).json(newWorkout);
 });
+
+// Update a workout
+router.put("/workouts/:id", (req, res) => {
+    const index = workouts.findIndex(w => w.id === req.params.id);
+    if (index === -1) {
+        return res.status(404).json({ message: "Workout not found" });
+    }
+    workouts[index] = { ...workouts[index], ...req.body };
+    res.json(workouts[index]);
+});
+
+// Delete a workout
+router.delete("/workouts/:id", (req, res) => {
+    const index = workouts.findIndex(w => w.id === req.params.id);
+    if (index === -1) {
+        return res.status(404).json({ message: "Workout not found" });
+    }
+    workouts.splice(index, 1);
+    res.status(204).send();
+});
+
+export default router;
