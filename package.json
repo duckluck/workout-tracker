@@ -1,0 +1,18 @@
+{
+  "name": "workout-tracker",
+  "version": "1.0.0",
+  "description": "A simple workout tracking API",
+  "main": "src/server/api.ts",
+  "scripts": {
+    "start": "node dist/server/api.js",
+    "build": "tsc",
+    "test": "echo \"No tests yet\""
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.0",
+    "ts-node": "^10.9.1"
+  }
+}
